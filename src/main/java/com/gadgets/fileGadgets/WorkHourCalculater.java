@@ -1,12 +1,16 @@
 package com.gadgets.fileGadgets;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class WorkHourCalculater {
     public static Map<String, Float> nameAndHourMap = new HashMap<>();
 
-    public static void workHourCalculate(String workHourStr) {
+    public static void monthWorkHourCalculate(String workHourStr) {
         String[] workHourList = workHourStr.split("\\n");
         float sum = 0;
         for (String workHour : workHourList) {
@@ -35,33 +39,52 @@ public class WorkHourCalculater {
         if (sum != 4) {
             System.out.println("sum hour is not 4!");
         }
+        StringBuilder sb = new StringBuilder();
+        float sump = 0;
         for (Map.Entry<String, Float> nameAndHour : nameAndHourMap.entrySet()) {
             String name = nameAndHour.getKey();
             float hour = nameAndHour.getValue();
-            System.out.println(name + ":" + hour / 4 + "(" + hour + ")");
+            float hourp = hour / 4;
+            sb.append(hourp).append("+");
+            sump+=hourp;
+            System.out.println(name + ":" + hourp + "(" + hour + ")");
+        }
+        sb.append("=").append(sump);
+        System.out.println(sb.toString());
+    }
+
+    public static void weekWorkHourCalculate(String path) {
+        Workbook readwb = ExcelUtil.getWorkbookFromFile(path);
+        Sheet sheet = readwb.getSheetAt(0);
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            String type = ExcelUtil.getCellFromRow(row, 2);
         }
     }
 
     public static void main(String[] args) {
-        String workHourStr = "Keel发行：0.55\n" +
-                "闪名新马：0.2\n" +
-                "Keel：0.1 \n" +
-                "Keel发行：0.15\n" +
-                "鸿图东南亚：0.15\n" +
-                "Keel发行：0.78\n" +
-                "闪名港台：0.02\n" +
-                "Keel：0.05 \n" +
-                "鸿图东南亚：0.77\n" +
-                "鸿图港台：0.05\n" +
-                "Keel：0.15 \n" +
-                "闪名东南亚:0.03\n" +
-                "梦想东南亚：0.45\n" +
-                "鸿图港台：0.02\n" +
-                "Keel：0.2 \n" +
-                "闪名东南亚：0.08\n" +
-                "sigmar:0.13\n" +
-                "梦想港台：0.12";
+        String workHourStr = "Keel发行：0.38\n" +
+                "Keel发行：0.35\n" +
+                "Sigmar全球：0.05\n" +
+                "REF日本：0.06\n" +
+                "REF日本：0.05\n" +
+                "闪名新马：0.05\n" +
+                "龙族东南亚：0.06\n" +
+                "Keel：0.08\n" +
+                "Keel发行：0.55\n" +
+                "Sigmar：0.17\n" +
+                "战舰全球：0.1\n" +
+                "迷失童话：0.1\n" +
+                "REF欧美：0.63\n" +
+                "Keel：0.17\n" +
+                "Keel发行：0.2 \n" +
+                "梦想东南亚：0.02\n" +
+                "迷失童话：0.25\n" +
+                "REF欧美：0.46\n" +
+                "Keel发行：0.1 \n" +
+                "闪名国内：0.04\n" +
+                "梦想港台：0.13";
 
-        workHourCalculate(workHourStr);
+        monthWorkHourCalculate(workHourStr);
     }
 }
